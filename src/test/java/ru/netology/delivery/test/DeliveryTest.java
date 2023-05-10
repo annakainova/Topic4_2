@@ -8,9 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import ru.netology.delivery.data.DataGenerator;
 
-import java.time.Duration;
 
-import static com.codeborne.selenide.Condition.appear;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Selenide.*;
 
