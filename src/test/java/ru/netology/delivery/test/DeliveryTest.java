@@ -1,6 +1,5 @@
 package ru.netology.delivery.test;
 
-import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.ElementsCollection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,7 +22,6 @@ class DeliveryTest {
     @Test
     @DisplayName("Should successful plan and replan meeting")
     void shouldSuccessfulPlanAndReplanMeeting() {
-        Configuration.holdBrowserOpen = true;
         var validUser = DataGenerator.Registration.generateUser("ru");
         var daysToAddForFirstMeeting = 4;
         var firstMeetingDate = DataGenerator.generateDate(daysToAddForFirstMeeting);
@@ -174,7 +172,4 @@ class DeliveryTest {
         $("[data-test-id='agreement'].input_invalid").shouldBe(enabled);
         $x("//div[contains(text(), 'Успешно!')]").shouldNot(appear, Duration.ofSeconds(15));
     }
-
-
-
 }
