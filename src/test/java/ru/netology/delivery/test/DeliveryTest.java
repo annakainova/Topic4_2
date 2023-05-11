@@ -50,7 +50,8 @@ class DeliveryTest {
         $(".button__text").click();
 
         //check
-        $("[data-test-id='replan-notification'] .notification__content").shouldHave(exactText("У вас уже запланирована встреча на другую дату. Перепланировать?"));
+        $("[data-test-id='replan-notification'] .notification__content").should(appear, Duration.ofSeconds(15));
+        $("[data-test-id='replan-notification'] .notification__content").shouldHave(text("У вас уже запланирована встреча на другую дату. Перепланировать?"));
 
         //click
         ElementsCollection buttons = $$(".button__text");
