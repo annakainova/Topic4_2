@@ -31,6 +31,13 @@ public class DataGenerator {
         return city;
     }
 
+    public static String generateCityNotFromList() {
+        // с помощью Faker, либо используя массив валидных городов и класс Random
+        String [] cities = new String[] {"Рыбинск", "Арзамас", "Дзержинск"};
+        String city = getRandomCity(cities);
+        return city;
+    }
+
     public static String generateName(String locale) {
         // использовать Faker
         Faker faker = new Faker(new Locale(locale));

@@ -8,8 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 import ru.netology.delivery.data.DataGenerator;
 
+import java.time.Duration;
 
-import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 class DeliveryTest {
@@ -58,4 +59,121 @@ class DeliveryTest {
         //check
         $("[data-test-id='success-notification'] .notification__content").shouldHave(exactText(("Встреча успешно запланирована на " + secondMeetingDate)));
     }
+
+    @Test
+    public void sendFormCityNotFromListTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 4;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='city'] input").setValue(DataGenerator.generateCityNotFromList());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='city']//span[@class='input__sub'][contains(text(), 'Доставка в выбранный город недоступна')]").should(appear);
+    }
+
+    @Test
+    public void sendFormEmptyCityTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 4;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='city']//span[@class='input__sub'][contains(text(), 'Поле обязательно для заполнения')]").should(appear);
+    }
+
+    @Test
+    public void sendFormEmptyDateTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='date']//span[@class='input__sub'][contains(text(), 'Неверно введена дата')]").should(appear);
+    }
+
+    @Test
+    public void sendFormDateEarlierThan3DaysTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 2;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='date']//span[@class='input__sub'][contains(text(), 'Заказ на выбранную дату невозможен')]").should(appear);
+    }
+
+    @Test
+    public void sendFormEmptyNameTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 4;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='name']//span[@class='input__sub'][contains(text(), 'Поле обязательно для заполнения')]").should(appear);
+    }
+
+    @Test
+    public void sendFormLatinInNameTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 4;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='name'] input").setValue(DataGenerator.generateName("en"));
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='name']//span[@class='input__sub'][contains(text(), 'Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы.')]").should(appear);
+    }
+
+    @Test
+    public void sendFormEmptyPhoneTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 4;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='agreement']").click();
+        $(".button__text").click();
+        $x("//span[@data-test-id='phone']//span[@class='input__sub'][contains(text(), 'Поле обязательно для заполнения')]").should(appear);
+    }
+
+    @Test
+    public void sendFormEmptyCheckBoxTest() {
+        var validUser = DataGenerator.Registration.generateUser("ru");
+        var daysToAddForFirstMeeting = 4;
+        var date = DataGenerator.generateDate(daysToAddForFirstMeeting);
+        $("[data-test-id='city'] input").setValue(validUser.getCity());
+        $("[data-test-id='date'] input").sendKeys(Keys.CONTROL,"a",Keys.DELETE);
+        $("[data-test-id='date'] input").setValue(date);
+        $("[data-test-id='name'] input").setValue(validUser.getName());
+        $("[data-test-id='phone'] input").setValue(validUser.getPhone());
+        $(".button__text").click();
+        $("[data-test-id='agreement'].input_invalid").shouldBe(enabled);
+        $x("//div[contains(text(), 'Успешно!')]").shouldNot(appear, Duration.ofSeconds(15));
+    }
+
+
+
 }
